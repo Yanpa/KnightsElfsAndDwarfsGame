@@ -1,5 +1,5 @@
 package board;
 
-public class Оbstacles {
+public class Obstacles {
 
 }
