@@ -8,8 +8,8 @@ public class Tile {
     Color colorOfTheTile;
 
     public Tile(int x, int y, Color color){
-        this.yCoordinates = x * TILE_SIZE;
         this.xCoordinates = y * TILE_SIZE;
+        this.yCoordinates = x * TILE_SIZE;
         this.colorOfTheTile = color;
     }
 

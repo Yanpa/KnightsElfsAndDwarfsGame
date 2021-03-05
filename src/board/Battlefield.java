@@ -8,10 +8,12 @@ public class Battlefield extends JPanel {
     private final int BATTLEFIELD_HEIGHT = 9;
     private final int BATTLEFIELD_WIDTH = 7;
     Tile[][] battlefieldBoard = new Tile[BATTLEFIELD_WIDTH][BATTLEFIELD_HEIGHT];
+    PlayerChoice playerChoiceA = new PlayerChoice(800, 50, 'A');
+    PlayerChoice playerChoiceB = new PlayerChoice(800, 50, 'B');
 
     public Battlefield(){
-        //this.setPreferredSize(new Dimension(BATTLEFIELD_WIDTH * 40, BATTLEFIELD_HEIGHT * 40));
         this.setLayout(null);
+        this.setBackground(Color.WHITE);
         this.setPreferredSize(new Dimension(1100, 700));
 
         createTheBattlefield();
@@ -28,6 +30,11 @@ public class Battlefield extends JPanel {
                 battlefieldBoard[i][j].renderTile(g);
             }
         }
+
+        playerChoiceA.renderPlayerChoice(g);
+        playerChoiceA.removeRenderedPlayerChoice(g);
+
+        playerChoiceB.renderPlayerChoice(g);
     }
 
     private void createTheBattlefield(){
