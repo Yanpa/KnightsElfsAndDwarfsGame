@@ -7,11 +7,13 @@ import pieces.Piece;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class Battlefield extends JPanel implements MouseListener {
+public class Battlefield extends JPanel implements MouseListener, ActionListener {
 
     private final int BATTLEFIELD_HEIGHT = 9;
     private final int BATTLEFIELD_WIDTH = 7;
@@ -20,6 +22,8 @@ public class Battlefield extends JPanel implements MouseListener {
 
     PlayerChoice playerChoiceA = new PlayerChoice(800, 50, 'A');
     PlayerChoice playerChoiceB = new PlayerChoice(800, 50, 'B');
+
+    JButton knight, elf, dwarf, attack, heal, move;
 
     int currentXClicked, currentYClicked;
     boolean gameIsRunning = false;
@@ -51,6 +55,24 @@ public class Battlefield extends JPanel implements MouseListener {
 
         createTheBattlefield();
         createPieces();
+        addButtonsChoicesForFigures();
+        addButtonsChoicesForActions();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == knight){
+            System.out.println("Knight was clicked");
+        }
+
+        if(e.getSource() == attack){
+            System.out.println("Attack was clicked");
+        }
+
+        if(startOfTheBattle()){
+            removingTheButtonsForFigures();
+            addButtonsChoicesForActions();
+        }
     }
 
     @Override
@@ -94,15 +116,11 @@ public class Battlefield extends JPanel implements MouseListener {
             }
         }
 
-        firstKnightASide.setXCoordinates(4);
-        firstKnightASide.setYCoordinates(5);
-        firstKnightASide.renderPiece(g);
 
-        firstDwarfBSide.setXCoordinates(2);
-        firstDwarfBSide.setXCoordinates(4);
-        firstDwarfBSide.renderPiece(g);
+    }
 
-        playerChoiceA.renderPlayerChoice(g);
+    private boolean startOfTheBattle(){
+        return gameIsRunning = (playerAChampions.isEmpty() && playerBChampions.isEmpty());
     }
 
     private void createTheBattlefield(){
@@ -142,5 +160,45 @@ public class Battlefield extends JPanel implements MouseListener {
 
     }
 
+    private void addButtonsChoicesForFigures(){
+        knight = new JButton("Knight");
+        elf = new JButton("Elf");
+        dwarf = new JButton("Dwarf");
 
+        this.add(knight);
+        this.add(elf);
+        this.add(dwarf);
+
+        knight.setBounds(860, 120, 140, 40);
+        elf.setBounds(860, 180, 140, 40);
+        dwarf.setBounds(860, 240, 140, 40);
+
+        knight.addActionListener(this);
+        elf.addActionListener(this);
+        dwarf.addActionListener(this);
+    }
+
+    private void removingTheButtonsForFigures(){
+        this.remove(knight);
+        this.remove(elf);
+        this.remove(dwarf);
+    }
+
+    private void addButtonsChoicesForActions(){
+        attack = new JButton("Attack");
+        heal = new JButton("Heal");
+        move = new JButton("Move");
+
+        this.add(attack);
+        this.add(heal);
+        this.add(move);
+
+        attack.setBounds(860, 120, 140, 40);
+        heal.setBounds(860, 180, 140, 40);
+        move.setBounds(860, 240, 140, 40);
+
+        attack.addActionListener(this);
+        heal.addActionListener(this);
+        move.addActionListener(this);
+    }
 }

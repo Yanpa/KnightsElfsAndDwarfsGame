@@ -7,8 +7,6 @@ public class PlayerChoice {
     private int xCoordinates, yCoordinates;
     private char player;
 
-    JButton jButton;
-
     public PlayerChoice(int x, int y, char player){
         this.xCoordinates = x;
         this.yCoordinates = y;
@@ -30,9 +28,5 @@ public class PlayerChoice {
 
         g.setFont(new Font("Ariel", Font.BOLD, 20));
         g.drawString("Player " + player + " turn", xCoordinates + 60, yCoordinates + 30);
-    }
-
-    public void addButtonsForChoices(){
-
     }
 }
