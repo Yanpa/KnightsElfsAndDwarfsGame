@@ -1,7 +1,7 @@
 package pieces;
 
 public class Knight extends Piece {
-    public Knight(char character) {
-        super(8, 3, 15, 1, 1, character);
+    public Knight(char character, int team) {
+        super(8, 3, 15, 1, 1, character, team);
     }
 }

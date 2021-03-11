@@ -1,7 +1,6 @@
 package board;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class GameBoard extends JFrame {
     public GameBoard(){
