@@ -15,6 +15,7 @@ public class Tile {
     public Tile(int x, int y, Color color){
         this.xCoordinates = y * TILE_SIZE;
         this.yCoordinates = x * TILE_SIZE;
+
         this.colorOfTheTile = color;
     }
 
@@ -26,19 +27,21 @@ public class Tile {
         g.drawRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
     }
 
-    public void showWhereToPutFigures(Graphics g, int countOfMoves){
-        if(countOfMoves % 2 != 0){
-            g.setColor(Color.black);
-            g.fillRect(xCoordinates + 75, yCoordinates + 50, TILE_SIZE, TILE_SIZE);
-            g.setColor(Color.red);
-            g.drawString("X", xCoordinates + 100, yCoordinates + 75);
-        }
+    public void showWhereToPutFiguresASide(Graphics g){
+        g.setColor(Color.black);
+        g.fillRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
+        g.setColor(Color.red);
+        g.drawString("X", xCoordinates + 100, yCoordinates + 110);
+        g.setColor(Color.WHITE);
+        g.drawRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
+    }
 
-        else{
-            g.setColor(Color.red);
-            g.fillRect(xCoordinates + 75, yCoordinates + 50, TILE_SIZE, TILE_SIZE);
-            g.setColor(Color.black);
-            g.drawString("X", xCoordinates + 100, yCoordinates + 75);
-        }
+    public void showWhereToPutFiguresBSide(Graphics g){
+        g.setColor(Color.red);
+        g.fillRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
+        g.setColor(Color.black);
+        g.drawString("X", xCoordinates + 100, yCoordinates + 110);
+        g.setColor(Color.WHITE);
+        g.drawRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
     }
 }
