@@ -24,6 +24,10 @@ public class PlayerChoiceAndScore {
         this.theTeamScore = theTeamScore;
     }
 
+    /**
+     * Рисува полето за избора на играча
+     * @param g
+     */
     public void renderPlayerChoice(Graphics g){
         g.setColor(Color.black);
         g.drawRect(xCoordinatesOfTheChoice, yCoordinatesOfTheChoice, 250, 300);
@@ -32,6 +36,10 @@ public class PlayerChoiceAndScore {
         g.drawString("Player " + player + " turn", xCoordinatesOfTheChoice + 60, yCoordinatesOfTheChoice + 30);
     }
 
+    /**
+     * Рисува точките на играча
+     * @param g
+     */
     public void renderPlayerScore(Graphics g){
         g.setColor(Color.black);
         g.drawRect(xCoordinatesOfTheScore, yCoordinatesOfTheScore, 250, 100);
@@ -43,6 +51,10 @@ public class PlayerChoiceAndScore {
         g.drawString( "Team " + player + " score: " + theTeamScore, xCoordinatesOfTheScore + 60, yCoordinatesOfTheScore + 30);
     }
 
+    /**
+     * Прикрива точките и избора на играча
+     * @param g
+     */
     public void removeRenderedPlayerChoice(Graphics g){
         g.setColor(Color.WHITE);
         g.drawRect(xCoordinatesOfTheChoice, yCoordinatesOfTheChoice, 250, 300);

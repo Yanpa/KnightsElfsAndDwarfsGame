@@ -3,6 +3,9 @@ package board;
 import javax.swing.*;
 
 public class GameBoard extends JFrame {
+    /**
+     * Констурктор създаващ приложението (играта)
+     */
     public GameBoard(){
         this.add(new Battlefield());
         this.setSize(1100, 700);

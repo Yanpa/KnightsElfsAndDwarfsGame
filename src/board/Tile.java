@@ -19,6 +19,10 @@ public class Tile {
         this.colorOfTheTile = color;
     }
 
+    /**
+     * Рисува всяка плочка по зададени координати и цвят
+     * @param g
+     */
     public void renderTile(Graphics g){
         g.setColor(colorOfTheTile);
         g.fillRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
@@ -27,6 +31,10 @@ public class Tile {
         g.drawRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
     }
 
+    /**
+     * Прикрива полето в началото на играта
+     * @param g
+     */
     public void showWhereToPutFiguresASide(Graphics g){
         g.setColor(Color.black);
         g.fillRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
@@ -36,6 +44,10 @@ public class Tile {
         g.drawRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);
     }
 
+    /**
+     * Прикрива полето в началото на играта
+     * @param g
+     */
     public void showWhereToPutFiguresBSide(Graphics g){
         g.setColor(Color.red);
         g.fillRect(xCoordinates + 70, yCoordinates + 70, TILE_SIZE, TILE_SIZE);

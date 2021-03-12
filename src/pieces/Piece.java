@@ -109,6 +109,10 @@ public abstract class Piece {
         this.characterIdentity = characterIdentity;
     }
 
+    /**
+     * Рисува фигурите като им дава точни цветове, по това от кой "отбор" са
+     * @param g
+     */
     public void renderPiece(Graphics g){
         if(characterIdentity == 'K' || characterIdentity == 'E' || characterIdentity == 'D')
             g.setColor(new Color(54, 13, 73));
