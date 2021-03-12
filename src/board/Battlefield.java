@@ -33,7 +33,7 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
     JButton knight, elf, dwarf, attack, heal, move;
 
     int currentXClicked, currentYClicked, numberOfObstacles, numberOfASideKnights, numberOfBSideKnights, numberOfASideElfs,
-            numberOfBSideElfs, numberOfASideDwarfs, numberOfBSideDwarfs, numberOfMoves = 1, numberOfTimesTheBoardHasToBeCovered = 12;
+            numberOfBSideElfs, numberOfASideDwarfs, numberOfBSideDwarfs, numberOfMoves = 1, numberOfTimesTheBoardHasToBeCovered = 12, deadCount = 0;
 
     boolean gameIsRunning = false;
 
@@ -41,22 +41,23 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
     ArrayList<Piece> playerBChampions = new ArrayList<>(6);
     ArrayList<Piece> gameAChampions = new ArrayList<>(6);
     ArrayList<Piece> gameBChampions = new ArrayList<>(6);
-    ArrayList<Piece> deadChampions = new ArrayList<>(12);
+    Piece[] deadPieces = new Piece[12];
 
+    Piece[] pickedPieces = new Piece[2];
 
-    Knight firstKnightASide = new Knight('K', 1);
-    Knight secondKnightASide = new Knight('K', 1);
-    Elf firstElfASide = new Elf('E', 1);
-    Elf secondElfASide = new Elf('E', 1);
-    Dwarf firstDwarfASide = new Dwarf('D', 1);
-    Dwarf secondDwarfASide = new Dwarf('D', 1);
+    Knight firstKnightASide = new Knight('K', 1, "FirstKnightOfASide");
+    Knight secondKnightASide = new Knight('K', 1, "SecondKnightOfASide");
+    Elf firstElfASide = new Elf('E', 1, "FirstElfOfASide");
+    Elf secondElfASide = new Elf('E', 1, "SecondElfOfASide");
+    Dwarf firstDwarfASide = new Dwarf('D', 1, "FirstDwarfASide");
+    Dwarf secondDwarfASide = new Dwarf('D', 1, "SecondDwarfASide");
 
-    Knight firstKnightBSide = new Knight('k', 2);
-    Knight secondKnightBSide = new Knight('k', 2);
-    Elf firstElfBSide = new Elf('e', 2);
-    Elf secondElfBSide = new Elf('e', 2);
-    Dwarf firstDwarfBSide = new Dwarf('d', 2);
-    Dwarf secondDwarfBSide = new Dwarf('d', 2);
+    Knight firstKnightBSide = new Knight('k', 2, "FirstKnightOfBSide");
+    Knight secondKnightBSide = new Knight('k', 2, "SecondKnightOfBSide");
+    Elf firstElfBSide = new Elf('e', 2, "FirstElfOfBSide");
+    Elf secondElfBSide = new Elf('e', 2, "SecondElfOfBSide");
+    Dwarf firstDwarfBSide = new Dwarf('d', 2, "FirstDwarfBSide");
+    Dwarf secondDwarfBSide = new Dwarf('d', 2, "SecondDwarfBSide");
 
     public Battlefield(){
         this.setLayout(null);
@@ -78,6 +79,8 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
     public void mouseClicked(MouseEvent e) {
         currentXClicked = (e.getX() - 70) / 70;
         currentYClicked = (e.getY() - 70) / 70;
+
+        int secondPositionX, secondPositionY;
 
         System.out.println("X: " + currentXClicked);
         System.out.println("Y: " + currentYClicked);
@@ -118,10 +121,19 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
 
         }
 
+        if(e.getSource() == heal){
+            piecesHealingItself(getPiece(currentXClicked, currentYClicked));
+        }
+
+        if(e.getSource() == move){
+
+        }
+
         if(startOfTheBattle()){
             removingTheButtonsForFigures();
             addButtonsChoicesForActions();
             createPieces(gameAChampions, gameBChampions);
+            numberOfMoves = 1;
         }
     }
 
@@ -373,10 +385,6 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
         numberOfMoves++;
     } */
 
-    private void movingTheKnight(){
-
-    }
-
     private void pieceAttackMove(Piece attacker, Piece theAttackedOne, boolean theAttackerIsInRange){
         int randomDice1 = random.nextInt(6) + 1, randomDice2 = random.nextInt(6) + 1, randomDice3 = random.nextInt(6) + 1;
         int theDamageDoneToTheAttackedOne, randomDicesSum = randomDice1 + randomDice2 + randomDice3;
@@ -396,6 +404,65 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
             if(attacker.getTeam() == 1) playerChoiceAndScoreA.setTheTeamScore(playerChoiceAndScoreA.getTheTeamScore() + theDamageDoneToTheAttackedOne);
             else playerChoiceAndScoreB.setTheTeamScore(playerChoiceAndScoreB.getTheTeamScore() + theDamageDoneToTheAttackedOne);
         }
+
+        numberOfMoves++;
+    }
+
+    private boolean attackerIsInRange(Piece attacker, Piece theAttackedOne){
+        boolean isOnTheBoardHorizontally = (attacker.getXCoordinates() + attacker.getAttackRange() < 9 && attacker.getXCoordinates() - attacker.getAttackRange() >= 0);
+        boolean isOnTheBoardVertically = (attacker.getYCoordinates() + attacker.getAttackRange() < 7 && attacker.getYCoordinates() - attacker.getAttackRange() >= 0);
+        boolean isOnTheBoard = isOnTheBoardHorizontally && isOnTheBoardVertically;
+
+        boolean isInRangeRight = (theAttackedOne.getXCoordinates() == attacker.getXCoordinates() + attacker.getAttackRange());
+        boolean isInRangeLeft = (theAttackedOne.getXCoordinates() == attacker.getXCoordinates() - attacker.getAttackRange());
+        boolean isInRangeTop = (theAttackedOne.getYCoordinates() == attacker.getYCoordinates() + attacker.getAttackRange());
+        boolean isInRangeDown = (theAttackedOne.getYCoordinates() == attacker.getYCoordinates() - attacker.getAttackRange());
+
+        return ((isInRangeTop || isInRangeRight || isInRangeDown || isInRangeLeft) && isOnTheBoard);
+    }
+
+    private boolean aChampionDied(Piece champion){
+        return champion.getHealth() <= 0;
+    }
+
+    private void procedureWhenAPieceDie(boolean championDead, Piece champion, ArrayList arrayList){
+        if(championDead){
+            arrayList.remove(champion);
+            deadPieces[deadCount] = champion;
+            deadCount++;
+        }
+    }
+
+    private void pieceHealingMove(Piece theHealer, boolean theHealerHasAPotion){
+        int randomAmountOfHealing = random.nextInt(6) + 1, randomDiceThatDecidesIfYouWillHaveAnotherMove = random.nextInt(6) + 1;
+
+        if(theHealerHasAPotion){
+            theHealer.setHealth(theHealer.getHealth() + randomAmountOfHealing);
+            theHealer.setHasHealthPotion(false);
+
+            System.out.println("Фигурата получи " + randomAmountOfHealing + " допълнителна кръв");
+        }
+
+
+        if(randomDiceThatDecidesIfYouWillHaveAnotherMove % 2 == 0){
+            numberOfMoves++;
+        }
+        else System.out.println("Имаш още един ход");
+    }
+
+    private void piecesHealingItself(Piece championTryingToHeal){
+        if(championTryingToHeal == firstKnightASide) pieceHealingMove(firstKnightASide, firstKnightASide.hasHealthPotion());
+        if(championTryingToHeal == firstElfASide) pieceHealingMove(firstElfASide, firstElfASide.hasHealthPotion());
+        if(championTryingToHeal == firstDwarfASide) pieceHealingMove(firstDwarfASide, firstDwarfASide.hasHealthPotion());
+        if(championTryingToHeal == firstKnightBSide) pieceHealingMove(firstKnightBSide, firstKnightBSide.hasHealthPotion());
+        if(championTryingToHeal == firstElfBSide) pieceHealingMove(firstElfBSide, firstElfBSide.hasHealthPotion());
+        if(championTryingToHeal == firstDwarfBSide) pieceHealingMove(firstDwarfBSide, firstDwarfBSide.hasHealthPotion());
+        if(championTryingToHeal == secondKnightASide) pieceHealingMove(secondKnightASide, secondKnightASide.hasHealthPotion());
+        if(championTryingToHeal == secondElfASide) pieceHealingMove(secondElfASide, secondElfASide.hasHealthPotion());
+        if(championTryingToHeal == secondDwarfASide) pieceHealingMove(secondDwarfASide, secondDwarfASide.hasHealthPotion());
+        if(championTryingToHeal == secondKnightBSide) pieceHealingMove(secondKnightBSide, secondKnightBSide.hasHealthPotion());
+        if(championTryingToHeal == secondElfBSide) pieceHealingMove(secondElfBSide, secondElfBSide.hasHealthPotion());
+        if(championTryingToHeal == secondDwarfBSide) pieceHealingMove(secondDwarfBSide, secondDwarfBSide.hasHealthPotion());
     }
 
     private void addButtonsChoicesForFigures(){
@@ -458,5 +525,15 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
 
     private boolean isOnTheBSideOfTheBoard(int x, int y){
         return ((x >= 0 && x <= 8) && (y == 0 || y == 1));
+    }
+
+    private boolean checkIfPieceIsThere(int x, int y){
+        return piecesBoard[x][y] != null;
+    }
+
+    private Piece getPiece(int x, int y){
+        if(checkIfPieceIsThere(x, y))
+            return piecesBoard[x][y];
+        return null;
     }
 }

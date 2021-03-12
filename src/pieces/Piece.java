@@ -6,13 +6,14 @@ public abstract class Piece {
     private final int PIECE_SIZE = 70;
     private int attack, armor, health, attackRange, speed, team, xCoordinates, yCoordinates;
     private char characterIdentity;
+    private String nameOfTheChampion;
     private boolean hasHealthPotion = true;
 
     public Piece(){
 
     }
 
-    public Piece(int attack, int armor, int health, int attackRange, int speed, char character, int team){
+    public Piece(int attack, int armor, int health, int attackRange, int speed, char character, int team, String nameOfTheChampion){
         this.attack = attack;
         this.armor = armor;
         this.health = health;
@@ -20,10 +21,15 @@ public abstract class Piece {
         this.speed = speed;
         this.team = team;
 
+        this.nameOfTheChampion = nameOfTheChampion;
         this.characterIdentity = character;
     }
 
-    public boolean isHasHealthPotion() {
+    public String getNameOfTheChampion() {
+        return nameOfTheChampion;
+    }
+
+    public boolean hasHealthPotion() {
         return hasHealthPotion;
     }
 
