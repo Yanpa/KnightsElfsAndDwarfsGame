@@ -27,8 +27,8 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
     Tile[][] battlefieldBoard = new Tile[BATTLEFIELD_WIDTH_TILE][BATTLEFIELD_HEIGHT_TILE];
     Piece[][] piecesBoard = new Piece[BATTLEFIELD_WIDTH][BATTLEFIELD_HEIGHT];
 
-    PlayerChoice playerChoiceA = new PlayerChoice(800, 50, 'A');
-    PlayerChoice playerChoiceB = new PlayerChoice(800, 50, 'B');
+    PlayerChoiceAndScore playerChoiceAndScoreA = new PlayerChoiceAndScore(800, 50, 'A', 800, 400);
+    PlayerChoiceAndScore playerChoiceAndScoreB = new PlayerChoiceAndScore(800, 50, 'B', 800, 400);
 
     JButton knight, elf, dwarf, attack, heal, move;
 
@@ -39,6 +39,10 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
 
     ArrayList<Piece> playerAChampions = new ArrayList<>(6);
     ArrayList<Piece> playerBChampions = new ArrayList<>(6);
+    ArrayList<Piece> gameAChampions = new ArrayList<>(6);
+    ArrayList<Piece> gameBChampions = new ArrayList<>(6);
+    ArrayList<Piece> deadChampions = new ArrayList<>(12);
+
 
     Knight firstKnightASide = new Knight('K', 1);
     Knight secondKnightASide = new Knight('K', 1);
@@ -63,7 +67,7 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
 
         creatingObstacles();
         createTheBattlefield();
-        createPieces();
+        createPieces(playerAChampions, playerBChampions);
         addButtonsChoicesForFigures();
         addButtonsChoicesForActions();
     }
@@ -117,7 +121,7 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
         if(startOfTheBattle()){
             removingTheButtonsForFigures();
             addButtonsChoicesForActions();
-            createPieces();
+            createPieces(gameAChampions, gameBChampions);
         }
     }
 
@@ -153,12 +157,14 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
 
     private void drawingThePlayerChoice(Graphics g){
         if(numberOfMoves % 2 == 0){
-            playerChoiceA.removeRenderedPlayerChoice(g);
-            playerChoiceB.renderPlayerChoice(g);
+            playerChoiceAndScoreA.removeRenderedPlayerChoice(g);
+            playerChoiceAndScoreB.renderPlayerChoice(g);
+            playerChoiceAndScoreB.renderPlayerScore(g);
         }
         else{
-            playerChoiceB.removeRenderedPlayerChoice(g);
-            playerChoiceA.renderPlayerChoice(g);
+            playerChoiceAndScoreB.removeRenderedPlayerChoice(g);
+            playerChoiceAndScoreA.renderPlayerChoice(g);
+            playerChoiceAndScoreA.renderPlayerScore(g);
         }
     }
 
@@ -219,7 +225,7 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
         }
     }
 
-    private void createPieces(){
+    private void createPieces(ArrayList championsA, ArrayList championsB){
         numberOfASideKnights = 2;
         numberOfBSideKnights = 2;
         numberOfASideDwarfs = 2;
@@ -227,19 +233,19 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
         numberOfASideElfs = 2;
         numberOfBSideElfs = 2;
 
-        playerAChampions.add(firstKnightASide);
-        playerAChampions.add(secondKnightASide);
-        playerAChampions.add(firstDwarfASide);
-        playerAChampions.add(secondDwarfASide);
-        playerAChampions.add(firstElfASide);
-        playerAChampions.add(secondElfASide);
+        championsA.add(firstKnightASide);
+        championsA.add(secondKnightASide);
+        championsA.add(firstDwarfASide);
+        championsA.add(secondDwarfASide);
+        championsA.add(firstElfASide);
+        championsA.add(secondElfASide);
 
-        playerBChampions.add(firstKnightBSide);
-        playerBChampions.add(secondKnightBSide);
-        playerBChampions.add(firstDwarfBSide);
-        playerBChampions.add(secondDwarfBSide);
-        playerBChampions.add(firstElfBSide);
-        playerBChampions.add(secondElfBSide);
+        championsB.add(firstKnightBSide);
+        championsB.add(secondKnightBSide);
+        championsB.add(firstDwarfBSide);
+        championsB.add(secondDwarfBSide);
+        championsB.add(firstElfBSide);
+        championsB.add(secondElfBSide);
     }
 
     private void placingPiecesOnBoard(Piece thePiece, Piece[][] piecesBoard, boolean isOnTheBoard, int x, int y, ArrayList champions){
@@ -299,7 +305,8 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
             numberOfBSideElfs--;
         }
 
-        numberOfMoves++;
+        if(numberOfASideKnights > 0 || numberOfBSideKnights > 0)
+            numberOfMoves++;
     }
 
     private void placingTheDwarfsOnTheBoard(){
@@ -323,17 +330,21 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
             numberOfBSideDwarfs--;
         }
 
-        numberOfMoves++;
+        if(numberOfASideKnights > 0 || numberOfBSideKnights > 0)
+            numberOfMoves++;
     }
 
 
-    private void placingThePiecesAndLogic(Piece theFirstPieceASide, Piece theSecondPieceASide, Piece theFirstPieceBSide, Piece theSecondPieceBSide, Piece[][] piecesBoard, boolean isOnTheBoard, int x, int y, ArrayList championsA, ArrayList championsB, int numberOfPiecesASide, int numberOfPiecesBSide){
+    /**
+     * Искаше ми се да направя този метод, за да си спестя създаването на горните три, но не открих начин, как да
+     * запазвам стойността на numberOfPiecesASide и numberOfPiecesBSide, след като метода се извика втори път
+     *
+     private void placingThePiecesAndLogic(Piece theFirstPieceASide, Piece theSecondPieceASide, Piece theFirstPieceBSide, Piece theSecondPieceBSide, Piece[][] piecesBoard, boolean isOnTheBoard, int x, int y, ArrayList championsA, ArrayList championsB, int numberOfPiecesASide, int numberOfPiecesBSide){
         if(numberOfMoves % 2 != 0 && numberOfPiecesASide > 0){
             if(numberOfPiecesASide == 2)
                 placingPiecesOnBoard(theFirstPieceASide, piecesBoard, isOnTheBoard, x, y, championsA);
             if(numberOfPiecesASide == 1)
                 placingPiecesOnBoard(theSecondPieceASide, piecesBoard, isOnTheBoard, x, y, championsA);
-            --numberOfPiecesASide;
         }
 
         if(numberOfMoves % 2 == 0 && numberOfPiecesBSide > 0){
@@ -341,10 +352,50 @@ public class Battlefield extends JPanel implements MouseListener, ActionListener
                 placingPiecesOnBoard(theFirstPieceBSide, piecesBoard, isOnTheBoard, x, y, championsB);
             if(numberOfPiecesBSide == 1)
                 placingPiecesOnBoard(theSecondPieceBSide, piecesBoard, isOnTheBoard, x, y, championsB);
-            --numberOfPiecesBSide;
         }
 
+        if(theFirstPieceASide == firstKnightASide){
+            numberOfASideKnights = --numberOfPiecesASide;
+            numberOfBSideKnights = --numberOfPiecesBSide;
+        }
+
+        if(theFirstPieceASide == firstElfASide){
+            numberOfASideElfs =--numberOfPiecesASide;
+            numberOfBSideElfs = --numberOfPiecesBSide;
+        }
+
+        if(theFirstPieceASide == firstDwarfASide){
+            numberOfASideDwarfs = --numberOfPiecesASide;
+            numberOfBSideDwarfs = --numberOfPiecesBSide;
+        }
+
+
         numberOfMoves++;
+    } */
+
+    private void movingTheKnight(){
+
+    }
+
+    private void pieceAttackMove(Piece attacker, Piece theAttackedOne, boolean theAttackerIsInRange){
+        int randomDice1 = random.nextInt(6) + 1, randomDice2 = random.nextInt(6) + 1, randomDice3 = random.nextInt(6) + 1;
+        int theDamageDoneToTheAttackedOne, randomDicesSum = randomDice1 + randomDice2 + randomDice3;
+
+        if(theAttackerIsInRange && randomDicesSum != theAttackedOne.getHealth()){
+            theDamageDoneToTheAttackedOne = attacker.getAttack() - theAttackedOne.getArmor();
+            theAttackedOne.setHealth(theAttackedOne.getHealth() - theDamageDoneToTheAttackedOne);
+
+            if(attacker.getTeam() == 1) playerChoiceAndScoreA.setTheTeamScore(playerChoiceAndScoreA.getTheTeamScore() + theDamageDoneToTheAttackedOne);
+            else playerChoiceAndScoreB.setTheTeamScore(playerChoiceAndScoreB.getTheTeamScore() + theDamageDoneToTheAttackedOne);
+        }
+
+        if(theAttackerIsInRange && randomDicesSum == 3){
+            theDamageDoneToTheAttackedOne = (attacker.getAttack() - theAttackedOne.getArmor()) / 2;
+            theAttackedOne.setHealth(theAttackedOne.getHealth() - theDamageDoneToTheAttackedOne);
+
+            if(attacker.getTeam() == 1) playerChoiceAndScoreA.setTheTeamScore(playerChoiceAndScoreA.getTheTeamScore() + theDamageDoneToTheAttackedOne);
+            else playerChoiceAndScoreB.setTheTeamScore(playerChoiceAndScoreB.getTheTeamScore() + theDamageDoneToTheAttackedOne);
+        }
     }
 
     private void addButtonsChoicesForFigures(){

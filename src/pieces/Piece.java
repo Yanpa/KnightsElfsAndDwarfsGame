@@ -6,6 +6,7 @@ public abstract class Piece {
     private final int PIECE_SIZE = 70;
     private int attack, armor, health, attackRange, speed, team, xCoordinates, yCoordinates;
     private char characterIdentity;
+    private boolean hasHealthPotion = true;
 
     public Piece(){
 
@@ -20,6 +21,14 @@ public abstract class Piece {
         this.team = team;
 
         this.characterIdentity = character;
+    }
+
+    public boolean isHasHealthPotion() {
+        return hasHealthPotion;
+    }
+
+    public void setHasHealthPotion(boolean hasHealthPotion) {
+        this.hasHealthPotion = hasHealthPotion;
     }
 
     public int getXCoordinates() {
@@ -100,6 +109,8 @@ public abstract class Piece {
         else g.setColor(new Color(89, 224, 132));
 
         g.fillRect((xCoordinates * PIECE_SIZE) + 70, (yCoordinates * PIECE_SIZE) + 70, PIECE_SIZE, PIECE_SIZE);
+        g.setColor(Color.black);
+        g.drawRect((xCoordinates * PIECE_SIZE) + 70, (yCoordinates * PIECE_SIZE) + 70, PIECE_SIZE, PIECE_SIZE);
 
         g.setColor(new Color(253, 205, 5));
         g.setFont(new Font("Ink Free", Font.BOLD, 35));
